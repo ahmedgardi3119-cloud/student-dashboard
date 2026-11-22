@@ -39,6 +39,29 @@ pool.connect()
         console.error("Failed to connect to PostgreSQL:", err.message);
     });
 
+if (!process.env.DATABASE_URL) {
+    console.error("DATABASE_URL is missing. Copy .env.example to .env and set it.");
+    process.exit(1);
+}
+
+// ---------------------------------------
+// Helpers
+// ---------------------------------------
+function parseStudent(body) {
+    const name = typeof body.name === "string" ? body.name.trim() : "";
+    const course = typeof body.course === "string" ? body.course.trim() : "";
+    const age = Number(body.age);
+
+    if (!name || !course || !Number.isInteger(age) || age < 1 || age > 120) {
+        return null;
+    }
+    return { name, age, course };
+}
+
+function isValidId(id) {
+    return /^\d+$/.test(id);
+}
+
 // ---------------------------------------
 // Routes
 // ---------------------------------------
@@ -63,11 +86,12 @@ app.get("/api/students", async function (req, res) {
 
 // POST a new student
 app.post("/api/students", async function (req, res) {
-    const { name, age, course } = req.body;
+    const student = parseStudent(req.body);
 
-    if (!name || !age || !course) {
-        return res.status(400).json({ error: "name, age and course are required." });
+    if (!student) {
+        return res.status(400).json({ error: "name, course and a valid age (1-120) are required." });
     }
+    const { name, age, course } = student;
 
     try {
         const result = await pool.query(
@@ -84,11 +108,15 @@ app.post("/api/students", async function (req, res) {
 // PUT (update) a student by id
 app.put("/api/students/:id", async function (req, res) {
     const { id } = req.params;
-    const { name, age, course } = req.body;
+    const student = parseStudent(req.body);
 
-    if (!name || !age || !course) {
-        return res.status(400).json({ error: "name, age and course are required." });
+    if (!isValidId(id)) {
+        return res.status(400).json({ error: "Invalid student id." });
     }
+    if (!student) {
+        return res.status(400).json({ error: "name, course and a valid age (1-120) are required." });
+    }
+    const { name, age, course } = student;
 
     try {
         const result = await pool.query(
@@ -110,6 +138,10 @@ app.put("/api/students/:id", async function (req, res) {
 // DELETE a student by id
 app.delete("/api/students/:id", async function (req, res) {
     const { id } = req.params;
+
+    if (!isValidId(id)) {
+        return res.status(400).json({ error: "Invalid student id." });
+    }
 
     try {
         const result = await pool.query(

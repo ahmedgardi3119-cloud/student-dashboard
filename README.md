@@ -1,4 +1,21 @@
-# Student Dashboard — Backend Setup Guide
+# Student Dashboard
+
+A student management dashboard (add, edit, delete, list) with a vanilla HTML/CSS/JS frontend and an Express + PostgreSQL REST API.
+
+## Project structure
+
+```
+student-dashboard/
+├── StudentDashboard.html   # Frontend page
+├── StudentDashboard.css    # Styles
+├── StudentDashboard.js     # Frontend logic + API calls
+├── server.js               # Express API
+├── schema.sql              # Database table
+├── .env.example            # Environment template
+└── package.json
+```
+
+# Backend Setup Guide
 
 Your frontend (HTML/CSS/JS) now talks to this Express + PostgreSQL API
 instead of storing students in memory.
@@ -34,7 +51,6 @@ CREATE TABLE IF NOT EXISTS students (
 ## 3. Configure the backend
 
 ```bash
-cd backend
 cp .env.example .env
 ```
 
@@ -44,7 +60,7 @@ Open `.env` and paste your real connection string into `DATABASE_URL`.
 
 ```bash
 npm install
-npm start
+npm start        # or: npm run dev  (auto-restarts with nodemon)
 ```
 
 You should see:
@@ -75,8 +91,8 @@ If you host the frontend somewhere public (Netlify, Vercel, GitHub
 Pages), the backend also needs to be public — `localhost` only works
 on your own machine. Easiest options:
 
-- **Railway** or **Render**: connect this `backend` folder as a Web
-  Service, set the `DATABASE_URL` and `PORT` environment variables
+- **Railway** or **Render**: connect this repo as a Web
+  Service (start command: `npm start`), set the `DATABASE_URL` and `PORT` environment variables
   there, deploy, and you'll get a public URL like
   `https://your-app.up.railway.app`.
 - Update `API_URL` in `StudentDashboard.js` to that public URL

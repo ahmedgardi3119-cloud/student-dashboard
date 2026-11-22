@@ -1,13 +1,18 @@
 {
-  "name": "backend",
+  "name": "student-dashboard",
   "version": "1.0.0",
-  "description": "Your frontend (HTML/CSS/JS) now talks to this Express + PostgreSQL API\r instead of storing students in memory.",
+  "description": "Student management dashboard: vanilla HTML/CSS/JS frontend with an Express + PostgreSQL REST API.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
-  "keywords": [],
+  "keywords": [
+    "express",
+    "postgresql",
+    "crud",
+    "student-dashboard"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
